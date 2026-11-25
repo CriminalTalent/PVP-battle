@@ -1,0 +1,467 @@
+/* =====================================================================
+   전투 화면 공용 스타일 (admin / player / spectator)
+   - 색은 아래 두 토큰 블록(라이트 / 다크)만 바꾸면 고객사별로 변경됩니다.
+   - 테마는 <html data-theme="light|dark"> 로 전환 (battle-ui.js가 저장·복원)
+   ===================================================================== */
+
+/* ---------- 토큰: 라이트 ---------- */
+:root,
+:root[data-theme="light"]{
+  color-scheme:light;
+  --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',system-ui,-apple-system,'Segoe UI',sans-serif;
+
+  --bg:#e5ebf1;
+  --bg-tint:#d9e4ee;
+  --panel:#f9fbfd;
+  --panel-2:#f0f4f8;
+  --panel-head:#e7eff7;
+  --line:#d4dee7;
+  --line-strong:#bbcad8;
+
+  --text:#25313a;
+  --text-2:#4b5a65;
+  --muted:#808d96;
+
+  --accent:#4a8cc4;        /* 기본 버튼 (하늘색) */
+  --accent-hover:#3c7bb2;
+  --accent-ink:#ffffff;
+  --accent-soft:#e0edf8;
+
+  --team-a:#b3555d; --team-a-soft:#f4e5e6;
+  --team-b:#4b7499; --team-b-soft:#e2ebf3;
+
+  --ok:#4c8a6a; --warn:#b48a2e; --bad:#b3555d;
+  --hp:#5a9478; --hp-mid:#c19a3b; --hp-low:#b3555d; --track:#dee5e9;
+  --gold:#a9822f;
+
+  --overlay:rgba(36,49,58,.45);
+  --shadow:0 1px 2px rgba(30,45,55,.06),0 6px 18px rgba(30,45,55,.07);
+  --radius:12px; --radius-sm:8px;
+}
+
+/* ---------- 토큰: 다크 (흑청색) ---------- */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10151d;
+  --bg-tint:#141b25;
+  --panel:#18202b;
+  --panel-2:#1e2733;
+  --panel-head:#1c2531;
+  --line:#2a3645;
+  --line-strong:#3a4a5d;
+
+  --text:#e3e9ef;
+  --text-2:#b2bec9;
+  --muted:#7d8a97;
+
+  --accent:#5f7f9b;
+  --accent-hover:#6d8eab;
+  --accent-ink:#f3f7fa;
+  --accent-soft:#233246;
+
+  --team-a:#d27c83; --team-a-soft:#33232a;
+  --team-b:#7aa5cf; --team-b-soft:#1d2e44;
+
+  --ok:#6fb08f; --warn:#d6ad55; --bad:#d27c83;
+  --hp:#6aac8b; --hp-mid:#d6ad55; --hp-low:#d27c83; --track:#2a3543;
+  --gold:#d6ad55;
+
+  --overlay:rgba(5,9,15,.62);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.28);
+}
+
+/* ---------- 기본 ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  background:linear-gradient(180deg,var(--bg-tint),var(--bg) 320px) fixed,var(--bg);
+  color:var(--text);font-family:var(--font);font-size:13px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;padding:0 12px 16px;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.container{max-width:1400px;margin:0 auto}
+[hidden]{display:none !important}
+
+/* ---------- 상단 바 ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
+  margin:0 -12px 12px;padding:10px 16px;background:var(--panel);
+  border-bottom:1px solid var(--line);box-shadow:0 1px 0 rgba(0,0,0,.02)
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-mark{
+  width:36px;height:36px;border-radius:10px;flex:none;display:grid;place-items:center;
+  background:var(--accent-soft);border:1px solid var(--line-strong);color:var(--accent)
+}
+.brand-mark svg{width:20px;height:20px}
+.brand-title{font-size:16px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap
+}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.chip.waiting .dot{background:var(--warn)}
+.chip.active .dot{background:var(--ok)}
+.chip.paused .dot{background:var(--accent)}
+.chip.ended .dot{background:var(--bad)}
+.topbar-spacer{flex:1}
+.icon-btn{
+  width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none;
+  background:var(--panel);border:1px solid var(--line);color:var(--text-2);transition:background .15s,color .15s
+}
+.icon-btn:hover{background:var(--accent-soft);color:var(--accent)}
+.icon-btn svg{width:18px;height:18px}
+.theme-toggle .sun{display:none}
+:root[data-theme="dark"] .theme-toggle .sun{display:block}
+:root[data-theme="dark"] .theme-toggle .moon{display:none}
+.header{display:none}
+
+/* ---------- 레이아웃 ---------- */
+.main-grid{display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:768px){ .main-grid{grid-template-columns:minmax(260px,1fr) 2fr minmax(260px,1fr)} }
+.center-section{display:flex;flex-direction:column;gap:12px}
+
+/* ---------- 패널 ---------- */
+.card,.team-container,.my-info{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px;box-shadow:var(--shadow);margin-bottom:12px;height:fit-content
+}
+.center-section > *{margin-bottom:0}
+.title{
+  display:flex;align-items:center;gap:8px;
+  margin:-12px -12px 12px;padding:10px 14px;border-bottom:1px solid var(--line);
+  background:var(--panel-head);border-radius:var(--radius) var(--radius) 0 0;
+  font-size:14px;font-weight:700;color:var(--text)
+}
+.title::before{content:"";width:4px;height:14px;border-radius:2px;background:var(--accent)}
+.control-section,.links-section,.player-form{
+  background:transparent;border:0;padding:0;margin-bottom:0
+}
+
+/* 팀 패널 */
+.team-title{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:-12px -12px 10px;padding:10px 14px;border-bottom:1px solid var(--line);
+  border-radius:var(--radius) var(--radius) 0 0;background:var(--panel-head);
+  font-size:14px;font-weight:700;color:var(--text)
+}
+.team-title::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.team-a .team-title{background:var(--team-a-soft);color:var(--team-a)}
+.team-a .team-title::before{background:var(--team-a)}
+.team-b .team-title{background:var(--team-b-soft);color:var(--team-b)}
+.team-b .team-title::before{background:var(--team-b)}
+
+/* ---------- 참가자 카드 ---------- */
+.player-card{
+  display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:8px;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius-sm);
+  transition:border-color .15s,box-shadow .15s
+}
+.player-card:last-child{margin-bottom:0}
+.player-card.dead{opacity:.5}
+.player-card.is-current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.player-card.editing{border-color:var(--warn);box-shadow:0 0 0 1px var(--warn) inset}
+.player-avatar{
+  width:40px;height:40px;border-radius:10px;object-fit:cover;flex:none;
+  border:1px solid var(--line-strong);background:var(--panel)
+}
+.player-info{flex:1;min-width:0}
+.player-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.hp,.my-hp{height:5px;background:var(--track);border-radius:999px;overflow:hidden;margin-bottom:4px}
+.my-hp{height:6px;margin:8px 0 4px}
+.hp>span,.my-hp>span{display:block;height:100%;background:var(--hp);border-radius:999px;transition:width .4s ease}
+.hp>span.mid,.my-hp>span.mid{background:var(--hp-mid)}
+.hp>span.low,.my-hp>span.low{background:var(--hp-low)}
+.hp-text,.my-hp-text{font-size:11px;color:var(--text-2);font-weight:600;font-variant-numeric:tabular-nums}
+.stats,.my-stats{font-size:11px;color:var(--muted)}
+.items-info,.my-items{font-size:11px;color:var(--text-2);margin-top:2px}
+.ready-status{
+  display:inline-block;margin-top:4px;font-size:10px;font-weight:700;color:var(--muted);
+  padding:1px 8px;border-radius:999px;background:var(--panel);border:1px solid var(--line)
+}
+
+/* 이미지 없을 때 기본 실루엣 */
+img.player-avatar:not([src]),img.player-avatar[src=""],img.my-avatar:not([src]),img.my-avatar[src=""],
+img.preview:not([src]),img.preview[src=""],.target img:not([src]),.target img[src=""]{
+  content:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%238a9aa5' fill-opacity='.16'/%3E%3Ccircle cx='20' cy='15' r='7' fill='%238a9aa5' fill-opacity='.7'/%3E%3Cpath d='M6 38c1.5-8.5 7.5-12 14-12s12.5 3.5 14 12z' fill='%238a9aa5' fill-opacity='.7'/%3E%3C/svg%3E");
+}
+
+/* ---------- 버튼 ---------- */
+.control-btn,.upload-btn,.send-btn,.enter-btn,.cancel-btn,.copy-btn,.edit-btn,.remove-btn,.ready-btn,.act,.cheer-btn,.game-over-close{
+  border-radius:var(--radius-sm);border:1px solid var(--line-strong);background:var(--panel);color:var(--text);
+  font-weight:600;transition:background .15s,border-color .15s,color .15s
+}
+.control-btn{padding:8px 12px;font-size:12px}
+.control-btn:hover:not(:disabled),.upload-btn:hover,.cheer-btn:hover,.edit-btn:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.control-btn:disabled,.act:disabled{opacity:.45}
+.control-btn.primary,.send-btn,.enter-btn{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.control-btn.primary:hover:not(:disabled),.send-btn:hover,.enter-btn:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:var(--accent-ink)}
+.control-btn.danger,.cancel-btn,.remove-btn{background:transparent;border-color:var(--bad);color:var(--bad)}
+.control-btn.danger:hover:not(:disabled),.cancel-btn:hover,.remove-btn:hover{background:var(--bad);color:#fff}
+.control-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.control-grid.single{grid-template-columns:1fr}
+.control-grid.three{grid-template-columns:repeat(3,1fr);margin-bottom:0}
+
+/* ---------- 관리자: 전투 제어 ---------- */
+.status-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.battle-id{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
+.status-badge{
+  display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;flex:none;white-space:nowrap;
+  font-size:12px;font-weight:700;background:var(--panel-2);border:1px solid var(--line);color:var(--text-2)
+}
+.status-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.status-badge.waiting::before{background:var(--warn)}
+.status-badge.active::before{background:var(--ok)}
+.status-badge.paused::before{background:var(--accent)}
+.status-badge.ended::before{background:var(--bad)}
+.control-btn.start-btn{
+  width:100%;padding:13px 12px;margin-bottom:8px;font-size:15px;font-weight:700;
+  background:var(--accent);border-color:var(--accent);color:var(--accent-ink)
+}
+.control-btn.start-btn:hover:not(:disabled){background:var(--accent-hover);border-color:var(--accent-hover);color:var(--accent-ink)}
+.create-section{
+  margin-top:12px;padding:10px 12px;border:1px dashed var(--line-strong);border-radius:var(--radius-sm);background:var(--panel-2)
+}
+.create-head{font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}
+.create-row{display:flex;gap:6px;align-items:center}
+.create-row .form-select{flex:1;min-width:0}
+#btnCreate{flex:none;font-size:12px;padding:6px 10px;color:var(--text-2)}
+
+/* ---------- 폼 ---------- */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.team-name-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.form-field{margin-bottom:8px}
+.form-label{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--text-2)}
+.form-input,.form-select,.chat-input,.name-input{
+  width:100%;height:34px;padding:0 10px;border-radius:var(--radius-sm);
+  background:var(--panel);border:1px solid var(--line-strong);color:var(--text);font-size:13px
+}
+.form-input:focus,.form-select:focus,.chat-input:focus,.name-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.form-input:disabled,.form-select:disabled{background:var(--panel-2);color:var(--muted)}
+.upload-row{display:flex;align-items:center;gap:8px}
+.upload-btn{padding:6px 12px;font-size:12px;height:34px}
+.preview{width:34px;height:34px;border-radius:8px;border:1px solid var(--line-strong);object-fit:cover;background:var(--panel-2)}
+.player-form.editing{padding:10px;margin:-4px;border:1px solid var(--warn);border-radius:var(--radius-sm);background:var(--panel-2)}
+.edit-actions{display:flex;gap:8px;margin-top:4px}
+.edit-actions .control-btn{flex:1;padding:10px 12px}
+.card-actions{display:flex;gap:6px;align-items:center;margin-top:6px}
+.edit-btn,.remove-btn{padding:3px 10px;font-size:11px}
+.lock-note{font-size:11px;color:var(--muted)}
+
+/* ---------- 링크 ---------- */
+.links-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}
+.link-item{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:8px;margin-bottom:6px}
+.link-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
+.link-url{
+  font-size:11px;color:var(--text-2);background:var(--panel);border:1px solid var(--line);border-radius:6px;
+  padding:4px 6px;word-break:break-all;margin-bottom:6px;cursor:pointer
+}
+.link-url:hover{border-color:var(--accent);color:var(--accent)}
+.copy-btn{padding:3px 10px;font-size:11px;background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.copy-btn:hover{background:var(--accent-hover)}
+
+/* ---------- 로그 / 채팅 ---------- */
+.logs-section,.chat-section{
+  overflow-y:auto;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:8px;margin-bottom:8px;height:320px
+}
+.page-admin .chat-section{height:220px}
+.page-player .logs-section{height:420px}
+.page-player .chat-section{height:280px}
+.page-spectator .logs-section,.page-spectator .chat-section{height:440px}
+.log-item{
+  margin-bottom:4px;padding:4px 8px;border-radius:6px;font-size:12px;line-height:1.45;color:var(--text-2);
+  border-left:3px solid transparent
+}
+.log-time{color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.log-team-a{background:var(--team-a-soft);border-left-color:var(--team-a);color:var(--text)}
+.log-team-b{background:var(--team-b-soft);border-left-color:var(--team-b);color:var(--text)}
+.log-result{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);color:var(--text);font-weight:600}
+.log-winner{background:var(--accent-soft);border-left-color:var(--accent);color:var(--text);font-weight:700}
+.log-notice{color:var(--accent);font-weight:600}
+.log-error{color:var(--bad);font-weight:600}
+.log-system{color:var(--text-2)}
+.chat-item{margin-bottom:6px;font-size:12px;color:var(--text)}
+.chat-name{font-weight:700;color:var(--accent)}
+.input-group{display:flex;gap:6px}
+.chat-input{flex:1}
+.send-btn{padding:0 14px;height:34px;font-size:12px}
+
+/* ---------- 참가자: 내 정보 ---------- */
+.my-header{display:flex;align-items:center;gap:10px}
+.my-avatar{width:52px;height:52px;border-radius:12px;object-fit:cover;border:1px solid var(--line-strong);background:var(--panel-2)}
+.my-details{flex:1;min-width:0}
+.my-name{font-size:16px;font-weight:700;color:var(--text)}
+.my-team{font-size:12px;color:var(--muted)}
+.ready-btn{padding:8px 14px;font-size:13px;background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ready-btn:hover:not(.done){background:var(--accent-hover)}
+.ready-btn.done{background:var(--panel-2);border-color:var(--line);color:var(--muted)}
+
+/* ---------- 중앙 무대 ---------- */
+.battle-main{text-align:center}
+.current-player{display:flex;justify-content:center;margin-bottom:12px}
+.current-player-info{background:transparent;border:0;padding:4px 0 0}
+.stage{
+  position:relative;margin:0 auto 12px;border-radius:16px;overflow:hidden;
+  border:1px solid var(--line-strong);background:var(--panel-2);box-shadow:var(--shadow)
+}
+.stage.team-a{border-color:var(--team-a);box-shadow:0 0 0 3px var(--team-a-soft)}
+.stage.team-b{border-color:var(--team-b);box-shadow:0 0 0 3px var(--team-b-soft)}
+.stage > img,.stage > .stage-initial,.stage > .stage-waiting{position:absolute;inset:0;width:100%;height:100%}
+.stage > img{object-fit:cover}
+.stage-initial{display:grid;place-items:center;font-size:88px;font-weight:700;color:var(--text-2);background:var(--panel-2)}
+.stage-waiting{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--panel-2)}
+.stage-waiting svg{width:38%;max-width:150px;height:auto}
+.wait-label{font-size:14px;font-weight:700;color:var(--text-2)}
+.wait-sub{font-size:12px;color:var(--muted);margin-top:-6px}
+.hg-frame{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.hg-glass{fill:var(--panel);stroke:var(--line-strong);stroke-width:2}
+.hg-sand{fill:var(--gold);opacity:.85}
+.hg-stream{stroke:var(--gold);stroke-width:2;stroke-dasharray:3 4;animation:hgStream 1.2s linear infinite}
+.hg-turn{transform-origin:50px 60px;animation:hgTurn 6s ease-in-out infinite}
+@keyframes hgStream{to{stroke-dashoffset:-14}}
+@keyframes hgTurn{0%,85%{transform:rotate(0)}100%{transform:rotate(180deg)}}
+.page-player .current-stage{width:240px;height:240px}
+.page-spectator .current-stage{width:100%;max-width:420px;height:400px}
+@media (max-width:767px){
+  .page-player .current-stage{width:200px;height:200px}
+  .page-spectator .current-stage{height:320px}
+}
+.turn-info{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.timer-display{font-size:34px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.timer-display.urgent{color:var(--bad)}
+.timer-seconds{font-size:12px;color:var(--muted);margin-bottom:14px}
+
+/* 행동 버튼 */
+.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.act{padding:12px 6px;font-size:14px;background:var(--panel-2)}
+.act:hover:not(:disabled){background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.act:not(:disabled){border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+@media (max-width:520px){ .actions{grid-template-columns:repeat(3,1fr)} }
+
+/* 응원 */
+.cheer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.cheer-btn{padding:10px 6px;font-size:13px;background:var(--panel-2)}
+@media (max-width:767px){ .cheer-grid{grid-template-columns:1fr} }
+
+/* ---------- 오버레이 공통 ---------- */
+.action-overlay,.game-over-overlay,.name-overlay{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:var(--overlay);backdrop-filter:blur(3px)
+}
+.action-overlay,.game-over-overlay{opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.action-overlay.show,.game-over-overlay.show{opacity:1;visibility:visible}
+.action-overlay{z-index:1000}
+.game-over-overlay{z-index:9999}
+.name-overlay{z-index:10000}
+.action-content,.game-over-box,.name-box{
+  width:92%;background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);padding:20px
+}
+.action-content{max-width:520px}
+.action-title{font-size:16px;font-weight:700;text-align:center;margin-bottom:12px}
+.targets{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin:8px 0}
+.target{
+  padding:10px 8px;text-align:center;font-size:12px;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:var(--radius-sm);cursor:pointer;transition:border-color .15s,background .15s
+}
+.target:hover:not(.disabled){border-color:var(--accent);background:var(--accent-soft)}
+.target.disabled{opacity:.5;cursor:not-allowed}
+.target img{width:48px;height:48px;border-radius:10px;margin-bottom:4px;object-fit:cover}
+.cancel-btn{width:100%;margin-top:12px;padding:10px}
+
+.name-box{max-width:380px;text-align:center}
+.name-box h2{font-size:17px;margin-bottom:12px}
+.name-input{margin-bottom:10px;height:40px}
+.enter-btn{width:100%;height:40px}
+
+/* ---------- 승리 안내 ---------- */
+.game-over-box{position:relative;max-width:440px;padding:28px 24px;text-align:center;transform:translateY(8px);transition:transform .25s ease}
+.game-over-overlay.show .game-over-box{transform:none}
+.win-a .game-over-box{border-top:4px solid var(--team-a)}
+.win-b .game-over-box{border-top:4px solid var(--team-b)}
+.trophy{width:64px;height:64px;margin:0 auto 10px;display:block}
+.trophy-cup{fill:var(--gold)}
+.trophy-line{fill:none;stroke:var(--gold);stroke-width:3.5;stroke-linecap:round}
+.trophy-star{fill:var(--panel)}
+.draw-line{stroke:var(--muted);stroke-width:4;stroke-linecap:round}
+.game-over-title{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--muted);margin-bottom:4px}
+.game-over-winner{font-size:26px;font-weight:800;color:var(--text);margin-bottom:10px;line-height:1.3}
+.win-a .game-over-winner{color:var(--team-a)}
+.win-b .game-over-winner{color:var(--team-b)}
+.game-over-detail{font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:16px}
+.game-over-detail .members{font-weight:700;color:var(--text)}
+.game-over-detail .verdict{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.game-over-close{padding:8px 20px;font-size:13px}
+.game-over-close:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+/* ---------- 반응형 ---------- */
+@media (max-width:767px){
+  .control-grid,.form-grid,.links-grid{grid-template-columns:1fr}
+  .brand-title{font-size:15px}
+  .chips{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+}
+
+/* =====================================================================
+   세로 꽉 찬 레이아웃 (데스크톱)
+   - 참가자·관전자: 세 열이 화면 높이를 채우고, 채팅·로그·팀 목록은 안에서 스크롤
+   - 관리자: 오른쪽 로그·채팅 열만 화면 높이에 고정
+   ===================================================================== */
+:root{--topbar-h:57px;--page-gap:12px}
+@media (min-width:768px) and (min-height:600px){
+  .page-player .main-grid,.page-spectator .main-grid{
+    height:calc(100vh - var(--topbar-h) - var(--page-gap) - 16px);
+    height:calc(100dvh - var(--topbar-h) - var(--page-gap) - 16px);
+    align-items:stretch
+  }
+  .page-player .main-grid > div,.page-spectator .main-grid > div{
+    display:flex;flex-direction:column;gap:12px;min-height:0
+  }
+  .page-player .main-grid > div > *,.page-spectator .main-grid > div > *{margin-bottom:0}
+
+  /* 팀 목록: 내용만큼, 최대 화면의 절반까지 늘고 넘치면 스크롤 */
+  .page-player .team-container,.page-spectator .team-container{
+    flex:0 1 auto;max-height:50%;min-height:0;display:flex;flex-direction:column
+  }
+  .page-player .team-container > [id^="team"],.page-spectator .team-container > [id^="team"]{overflow-y:auto;min-height:0}
+
+  /* 채팅·로그 카드: 남은 높이를 모두 사용 */
+  .page-player .main-grid > div > .card:last-child,
+  .page-spectator .main-grid > div:not(:nth-child(2)) > .card:last-child{
+    flex:1 1 auto;min-height:180px;display:flex;flex-direction:column
+  }
+  .page-player .logs-section,.page-player .chat-section,
+  .page-spectator .logs-section,.page-spectator .chat-section{flex:1 1 auto;height:auto;min-height:0}
+
+  /* 가운데 전투 카드: 남은 높이를 채우고, 초상은 높이에 맞춰 정사각형 */
+  .page-player .battle-main,.page-spectator .battle-main{
+    flex:1 1 auto;min-height:0;display:flex;flex-direction:column
+  }
+  .page-player .current-player,.page-spectator .current-player-info{
+    flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center
+  }
+  .page-player .current-player{margin-bottom:12px}
+  .page-player .current-stage,.page-spectator .current-stage{
+    flex:1 1 auto;min-height:160px;height:auto;width:auto;max-width:100%;aspect-ratio:1/1;margin:0 auto
+  }
+  .page-spectator .current-player-info .current-stage{margin-bottom:12px}
+  .page-spectator .main-grid > div:nth-child(2) > .card:last-child{flex:0 0 auto}
+
+  /* 관리자: 오른쪽 열을 화면 높이에 고정 */
+  .page-admin .main-grid > div:last-child{
+    position:sticky;top:calc(var(--topbar-h) + var(--page-gap));
+    height:calc(100vh - var(--topbar-h) - var(--page-gap) - 16px);
+    display:flex;flex-direction:column;gap:12px;min-height:0
+  }
+  .page-admin .main-grid > div:last-child > .card{margin-bottom:0;display:flex;flex-direction:column;min-height:0}
+  .page-admin .main-grid > div:last-child > .card:first-child{flex:3 1 0}
+  .page-admin .main-grid > div:last-child > .card:last-child{flex:2 1 0}
+  .page-admin .logs-section,.page-admin .chat-section{flex:1 1 auto;height:auto;min-height:0}
+}
